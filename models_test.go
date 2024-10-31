@@ -1,5 +1,7 @@
 package gotainer_test
 
+import "errors"
+
 type SimpleStruct struct {
 	data int
 }
@@ -8,8 +10,16 @@ func NewSimpleStruct() (*SimpleStruct, error) {
 	return &SimpleStruct{data: 1}, nil
 }
 
-func BadCtorForSimpleStruct() *SimpleStruct {
+func BadCtorForSimpleStructNonPtr() (SimpleStruct, error) {
+	return SimpleStruct{data: 2}, nil
+}
+
+func BadCtorForSimpleStructNoErr() *SimpleStruct {
 	return &SimpleStruct{data: 2}
+}
+
+func BadCtorForSimpleStructNonErr() (*SimpleStruct, int) {
+	return &SimpleStruct{data: 3}, 3
 }
 
 type TierZeroType struct {
@@ -43,4 +53,24 @@ type TierTwoTypeTwo struct {
 
 func NewTierTwoTypeTwo() (*TierTwoTypeTwo, error) {
 	return &TierTwoTypeTwo{data: "two"}, nil
+}
+
+var TierTwoTypeTwoError = errors.New("tier two type two error")
+
+func NewErroringTierTwoTypeTwo() (*TierTwoTypeTwo, error) {
+	return nil, TierTwoTypeTwoError
+}
+
+type InterfaceableType struct {
+}
+
+func (i *InterfaceableType) DoThing() {
+}
+
+type InterfaceType interface {
+	DoThing()
+}
+
+func NewInterfaceableType() (InterfaceType, error) {
+	return &InterfaceableType{}, nil
 }
